@@ -23,7 +23,7 @@ use this command:
 `docker network create appnet`  
   
 First. Deploy database (Postgres)
-use this command:
+use this command:  
 `docker run --net=appnet --name db-container -d -p 5431:5432 postgres`    
 
 Second.Deploy backend from dockerfile 
