@@ -18,6 +18,10 @@ Server starts from _src/backend/ClientServerApp.WebAPI_. Default local host is h
 layer _src/backend/ClientServerApp.Client_. for frontend.  
 WebUI starts on http://localhost:8081 (in development/production environment)  
 ### Start without `docker compose`
+before you need to create docker network (bridge) `appnet` for app.  
+use this command:  
+`docker network create appnet`  
+  
 First. Deploy database (Postgres)
 use this command:
 `docker run --net=appnet --name db-container -d -p 5431:5432 postgres`    
