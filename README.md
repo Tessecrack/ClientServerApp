@@ -4,7 +4,10 @@ from folder `src` use
 
 `docker compose up -d` 
 
-then go to http://localhost:8081
+then go to http://localhost:8081  
+  
+![Screenshot](screenshots/client.png)
+  
 ### Desc
 It is a simple  client-server  application  that  keeps  track of users (CRUD).
 ### Stack
