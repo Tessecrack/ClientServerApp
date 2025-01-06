@@ -1,0 +1,46 @@
+services:
+  db-service:
+    networks:
+      - appnet
+    image: postgres:latest
+    container_name: db-container
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1111
+      - POSTGRES_DB=db_users
+    ports:
+      - 5431:5432
+
+  webapi-service:
+    build:
+      context: backend/ClientServerApp.WebAPI
+      dockerfile: dockerfile
+    networks:
+      - appnet
+    container_name: webapi-container
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    ports:
+      - 8080:8080
+    depends_on:
+      - db-service
+  
+  client-service:
+    build: 
+      context: frontend/ClientServerApp.BlazorUI
+      dockerfile: dockerfile
+    container_name: client-container
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    networks:
+      - appnet
+    ports:
+      - 8081:8081
+    depends_on:
+      - db-service
+      - webapi-service
+
+networks:
+  appnet:
+    driver: bridge

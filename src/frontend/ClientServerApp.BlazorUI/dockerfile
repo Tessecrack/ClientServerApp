@@ -1,0 +1,6 @@
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+WORKDIR /app/client
+COPY published/ ./
+ENV WEB_API_ADDRESS=http://webapi-container:8080
+ENV ASPNETCORE_HTTP_PORTS=8081
+CMD [ "dotnet", "ClientServerApp.BlazorUI.dll" ]

@@ -1,0 +1,38 @@
+@page "/"
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlazorApp</title>
+
+    <style>
+        *
+        .body-component {
+            background-color: #202020;
+        }
+
+        .home-compnent {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header {
+            font-family: 'Courier New', Courier, monospace;
+            color: gold;
+        }
+
+    </style>
+</head>
+<body class="body-component">
+        <h2 class="header">BlazorApp</h2>
+    <div class="home-compnent">
+        <Home></Home>
+    </div>
+    <script src="_framework/blazor.web.js"></script>
+</body>
+</html>

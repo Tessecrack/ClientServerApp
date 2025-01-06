@@ -1,0 +1,250 @@
+@using Microsoft.AspNetCore.Components.Web;
+@using ClientServerApp.Client;
+@using ClientServerApp.Domain;
+
+@rendermode RenderMode.InteractiveServer
+
+@inject ApplicationClient client;
+
+<style>
+    table, tr, td {
+        border-style: solid;
+        border-color: #303030;
+        color: #DDDDDD;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    th {
+        border-style: solid;
+        border-color: #303030;
+        color: gold;
+    }
+
+    .white-text {
+        color:white
+    }
+
+    .flex-center {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .flex-center-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .container-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: #303030;
+        max-width: 80ch;
+        border-radius: 30px;
+    }
+
+    .container-table {
+        display: flex;
+        flex-direction: column;
+        min-width: 100%;
+    }
+
+    .input-field {
+        border: 1px solid #AAAAAA;
+        color: white;
+        border-radius: 10px;
+        background-color: #202020;
+    }
+
+    .button-white-text {
+        color: white;
+        flex-direction: row;
+        margin: 5ch;
+        min-width: 100px;
+        background-color: #303030;
+    }
+
+    .button-white-text-small-margin {
+        color: white;
+        margin: 1ch;
+        background-color: #303030;
+    }
+</style>
+<div class="container-form">
+    <div class="flex-center">
+        <h4 class="white-text">Registration form</h4>
+        <p class="white-text">
+            First name:<br/>
+            <input class="input-field" type="text" @bind="_inputUserFirstName">
+        </p>
+        <p class="white-text">
+            Last name:<br/>
+            <input class="input-field" type="text" @bind="_inputUserLastName">
+        </p>
+        <p class="white-text">
+            Phone number:<br/>
+            <input class="input-field" type="number" @bind="_inputUserPhoneNumber">
+        </p>
+        <p class="white-text">
+            Email:<br/>
+            <input class="input-field" type="text" @bind="_inputUserEmail">
+        </p>
+    </div>
+    <div class="flex-center-row">
+        <button class="button-white-text" @onclick="Save">Save</button>
+        <button class="button-white-text" @onclick="Reset">Reset</button>
+    </div>
+
+</div>
+<div class="container-table">
+    <h4 class="header">Registered users</h4>
+    <table>
+    <thead>
+        <tr>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Phone number</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var user in _users)
+        {
+            <tr>
+                <td>@user.FirstName</td>
+                <td>@user.LastName</td>
+                <td>@user.PhoneNumber</td>
+                <td>@user.Email</td>
+                <td>
+                    <button class="button-white-text-small-margin" @onclick=@((e) => SelectUser(user))>Select</button>
+                    <button class="button-white-text-small-margin" @onclick=@(async(e) => await DeleteUser(user))>Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+    </table>
+</div>
+@code {
+
+    private List<UserModel> _users = [];
+
+    private string _inputUserId = string.Empty;
+
+    private string _inputUserFirstName = string.Empty;
+
+    private string _inputUserLastName = string.Empty;
+
+    private string _inputUserPhoneNumber = string.Empty;
+
+    private string _inputUserEmail = string.Empty;
+
+    public async Task Save() 
+    {
+        var user = new UserModel
+        {
+            Id = Guid.Empty,
+            FirstName = _inputUserFirstName,
+            LastName = _inputUserLastName,
+            PhoneNumber = _inputUserPhoneNumber,
+            Email = _inputUserEmail
+        };
+
+        if (string.IsNullOrWhiteSpace(_inputUserId))
+        {
+            await AddUser(user);   
+            return;
+        }
+
+        user.Id = Guid.Parse(_inputUserId);
+        await EditUser(user);
+    }
+
+    public void SelectUser(UserModel user)
+    {
+        if (user == null)
+        {
+            return;
+        }
+        _inputUserId = user.Id.ToString();
+        _inputUserFirstName = user.FirstName!;
+        _inputUserLastName = user.LastName!;
+        _inputUserPhoneNumber = user.PhoneNumber!;
+        _inputUserEmail = user.Email!;
+    }
+
+    public async Task EditUser(UserModel user)
+    {
+        var updatedUser = await client.EditUser(user);
+        if (updatedUser == null)
+        {
+            return;
+        }
+
+        var userFromTable = _users.FirstOrDefault(u => u.Id == updatedUser.Id);
+
+        userFromTable!.FirstName = updatedUser.FirstName;
+        userFromTable!.LastName = updatedUser.LastName;
+        userFromTable!.PhoneNumber = updatedUser.PhoneNumber;
+        userFromTable!.Email = updatedUser.Email;
+    }
+
+    public async Task DeleteUser(UserModel user)
+    {
+        var userId = user.Id.ToString();
+        var wasDeleted = await client.DeleteUser(userId);
+        if (!wasDeleted)
+        {
+            return;
+        }
+
+        _users.Remove(user);
+        if (userId.Equals(_inputUserId))
+        {
+            _inputUserId = string.Empty;
+        }
+    }
+
+    public void Reset()
+    {
+        _inputUserId = string.Empty;
+        _inputUserFirstName = string.Empty;
+        _inputUserLastName = string.Empty;
+        _inputUserPhoneNumber = string.Empty;
+        _inputUserEmail = string.Empty;
+    }
+
+    protected override async Task OnInitializedAsync() 
+    {
+        await LoadAllUsers();
+    }
+
+    private async Task LoadAllUsers()
+    {
+        var users = await client.GetUsers();
+        if (users == null)
+        {
+            return;
+        }
+        _users = users.ToList();
+    }
+
+    private async Task AddUser(UserModel user)
+    {
+        var newUser = await client.AddUser(user);
+
+        if (newUser == null)
+        {
+            return;
+        }
+
+        _users.Add(newUser);
+    }
+}
