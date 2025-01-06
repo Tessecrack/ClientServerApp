@@ -18,12 +18,12 @@ UI client (blazor) use layer _src/backend/ClientServerApp.Client_. Client starts
 ### Start without `docker compose`
 First. Deploy database (Postgres)
 use this command:
-`docker run --net=appnet --name db-container -d -p 5431:5432 postgres`  
+`docker run --net=appnet --name db-container -d -p 5431:5432 postgres`    
 
 Second.Deploy backend from dockerfile 
 (src/backend/ClientServerApp.WebAPI/dockerfile)  
 before you need to use command:
-`dotnet publish -o published -c Release`
+`dotnet publish -o published -c Release`  
 ```docker
 FROM mcr.microsoft.com/dotnet/aspnet:8.0  AS  runtime
 WORKDIR  /app/webapi
@@ -36,7 +36,7 @@ CMD  [  "dotnet",  "ClientServerApp.WebAPI.dll"  ]
 Deploy frontend from dockerfile
 (src/frontend/ClientServerApp.BlazorUI/dockerfile)
 before you need to use command:
-`dotnet publish -o published -c Release`
+`dotnet publish -o published -c Release`  
 ```docker
 FROM mcr.microsoft.com/dotnet/aspnet:8.0  AS  runtime
 WORKDIR  /app/client
@@ -45,5 +45,5 @@ ENV  WEB_API_ADDRESS=http://webapi-container:8080
 ENV  ASPNETCORE_HTTP_PORTS=8081
 CMD  [  "dotnet",  "ClientServerApp.BlazorUI.dll"  ]
 ```
-`docker build . -t client-image`
+`docker build . -t client-image`  
 `docker run --net=appnet --name client-container -d -p 8081:8081 client-image`
