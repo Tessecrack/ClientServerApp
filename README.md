@@ -15,7 +15,8 @@ It is a simple  client-server  application  that  keeps  track of users (CRUD).
 
 ### Application structure
 Server starts from _src/backend/ClientServerApp.WebAPI_. Default local host is http://localhost:5000. Also, you can use swagger http://localhost:5000/swagger/index.html  
-UI client (blazor) use layer _src/backend/ClientServerApp.Client_. Client starts on http://localhost:8081 (in development/production environment)  
+layer _src/backend/ClientServerApp.Client_. for frontend.  
+WebUI starts on http://localhost:8081 (in development/production environment)  
 ### Start without `docker compose`
 First. Deploy database (Postgres)
 use this command:
