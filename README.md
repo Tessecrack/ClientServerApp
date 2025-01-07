@@ -36,7 +36,7 @@ WORKDIR  /app/webapi
 COPY  published/  ./
 CMD  [  "dotnet",  "ClientServerApp.WebAPI.dll"  ]
 ```  
-`docker build . -t webapi-image`
+`docker build . -t webapi-image`  
 `docker run --net=appnet --name webapi-container -d -p 8080:8080 webapi-image`
 
 Deploy frontend from dockerfile
