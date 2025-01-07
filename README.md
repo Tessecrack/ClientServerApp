@@ -24,7 +24,7 @@ use this command:
   
 First. Deploy database (Postgres)
 use this command:  
-`docker run --net=appnet --name db-container -d -p 5431:5432 postgres`    
+`docker run --net=appnet --name db-container -e POSTGRES_PASSWORD=1111 -e POSTGRES_DB=db_users -d -p 5431:5432 postgres`    
 
 Second.Deploy backend from dockerfile 
 (src/backend/ClientServerApp.WebAPI/dockerfile)  
