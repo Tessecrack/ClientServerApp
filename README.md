@@ -2,7 +2,7 @@
 ### Stack  
 NET 8; C# ASP NET Minimal Web API; Blazor; EF Core; PostgreSQL;   
 ### Quick start
-from folder `src` use 
+from folder `src` use command:  
 
 `docker compose up -d` 
 
